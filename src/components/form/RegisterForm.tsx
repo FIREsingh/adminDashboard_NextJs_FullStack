@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -37,6 +36,12 @@ const onSubmit = (values: z.infer<typeof formSchema>) => {
 export default function RegisterForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   return (
@@ -64,7 +69,7 @@ export default function RegisterForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Email" {...field} />
+                  <Input type="email" placeholder="abc@gmail.com" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -78,7 +83,11 @@ export default function RegisterForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your Password" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="Your Password"
+                    {...field}
+                  />
                 </FormControl>
 
                 <FormMessage />
@@ -92,7 +101,11 @@ export default function RegisterForm() {
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Confirm Password" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="Confirm Password"
+                    {...field}
+                  />
                 </FormControl>
 
                 <FormMessage />
