@@ -4,7 +4,11 @@ interface AuthLayoutProps {
   children: ReactNode;
 }
 const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
-  return <div className=" bg-slate-600 p-8 rounded-md w-2/5">{children}</div>;
+  return (
+    <div className=" bg-slate-200 p-8 rounded-md shadow-md min-w-96	 ">
+      {children}
+    </div>
+  );
 };
 
 export default AuthLayout;

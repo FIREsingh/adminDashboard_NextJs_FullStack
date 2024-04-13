@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,25 +15,19 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
-const formSchema = z
-  .object({
-    username: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-    email: z.string().email(),
-    password: z.string().min(4, "password is required"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords do not match",
-  });
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  email: z.string().email(),
+  password: z.string().min(4, "password must be at least 4 characters"),
+});
 
 const onSubmit = (values: z.infer<typeof formSchema>) => {
   console.log(values);
 };
 
-export default function RegisterForm() {
+export default function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -52,7 +45,6 @@ export default function RegisterForm() {
                 <FormControl>
                   <Input placeholder="User Name" {...field} />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -64,7 +56,7 @@ export default function RegisterForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Email" {...field} />
+                  <Input placeholder="abc@gmail.com" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -85,22 +77,9 @@ export default function RegisterForm() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
-                <FormControl>
-                  <Input placeholder="Confirm Password" {...field} />
-                </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <Button className=" w-full" type="submit">
-            Register
+            Login
           </Button>
         </div>
       </form>
@@ -108,9 +87,9 @@ export default function RegisterForm() {
         or
       </div>
       <p className=" text-sm text-gray-600 ">
-        Have an account?, please{" "}
-        <Link className=" text-blue-500 hover:underline " href="/login">
-          LogIn
+        If you don&apos;t have account, please{" "}
+        <Link className=" text-blue-500 hover:underline " href="/register">
+          Register
         </Link>
       </p>
     </Form>
