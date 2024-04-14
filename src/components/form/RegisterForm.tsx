@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import axios from "axios";
 
 const formSchema = z
   .object({
@@ -21,7 +22,7 @@ const formSchema = z
       message: "Username must be at least 2 characters.",
     }),
     email: z.string().email(),
-    password: z.string().min(4, "password is required"),
+    password: z.string().min(4, "Password must be at least 4 characters"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -29,8 +30,12 @@ const formSchema = z
     message: "Passwords do not match",
   });
 
-const onSubmit = (values: z.infer<typeof formSchema>) => {
+//=================== Register Handler =================
+const onSubmit = async (values: z.infer<typeof formSchema>) => {
   console.log(values);
+  await axios.post("api/register", values).then(() => {
+    console.log("ok ok ok");
+  });
 };
 
 export default function RegisterForm() {
@@ -117,15 +122,6 @@ export default function RegisterForm() {
           </Button>
         </div>
       </form>
-      <div className="mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400">
-        or
-      </div>
-      <p className=" text-sm text-gray-600 ">
-        Have an account?, please{" "}
-        <Link className=" text-blue-500 hover:underline " href="/login">
-          LogIn
-        </Link>
-      </p>
     </Form>
   );
 }

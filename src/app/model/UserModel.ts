@@ -19,6 +19,9 @@ export interface User extends Document {
   email: string;
   password: string;
   role: Role;
+  verifyCode: string;
+  verifyCodeExpiry: Date;
+  isVerified: boolean;
 }
 const UserSchema: Schema<User> = new Schema({
   username: {
@@ -26,13 +29,33 @@ const UserSchema: Schema<User> = new Schema({
     required: [true, "user name is required"],
     trim: true,
   },
-  email: { type: String, required: true, trim: true, unique: true },
-  password: { type: String, required: true },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
   role: {
     type: String,
     enum: Object.values(Role),
     required: true,
     default: "student",
+  },
+  verifyCode: {
+    type: String,
+    required: [true, "Verify Code is required"],
+  },
+  verifyCodeExpiry: {
+    type: Date,
+    required: [true, "Verify Code Expiry is required"],
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
   },
 });
 

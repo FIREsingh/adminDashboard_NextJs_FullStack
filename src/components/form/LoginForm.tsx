@@ -23,7 +23,9 @@ const formSchema = z.object({
   password: z.string().min(4, "password must be at least 4 characters"),
 });
 
+//=================== loginHandler ========================
 const onSubmit = (values: z.infer<typeof formSchema>) => {
+  console.log("ok");
   console.log(values);
 };
 

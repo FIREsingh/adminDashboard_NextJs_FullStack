@@ -30,9 +30,7 @@ export default function RootLayout({
         </div>
 
         {/* mainbar */}
-        <div className=" p-10 w-full flex justify-center items-center">
-          {children}
-        </div>
+        <div className=" p-10 w-screen">{children}</div>
       </body>
     </html>
   );
