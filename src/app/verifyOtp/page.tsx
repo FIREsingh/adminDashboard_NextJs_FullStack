@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/input-otp";
 import { toast } from "@/components/ui/use-toast";
 import PageTitle from "@/components/PageTitle";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -28,7 +30,8 @@ const FormSchema = z.object({
   }),
 });
 
-export function VerifyOtpPage() {
+export function VerifyOtp() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -36,7 +39,7 @@ export function VerifyOtpPage() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
       title: "You submitted the following values:",
       description: (
@@ -45,12 +48,22 @@ export function VerifyOtpPage() {
         </pre>
       ),
     });
+    await axios
+      .post("api/verifyMail", data)
+      .then((res) => {
+        console.log(res);
+        console.log("Success");
+        router.push("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   return (
-    <div className=" fixed p-10 justify-center flex flex-col items-center rounded-2xl shadow-2xl ">
+    <div className=" fixed flex flex-col m-auto items-center p-16 rounded-2xl shadow-2xl ">
       <Form {...form}>
-        <PageTitle title="Verify OTP" />
+        <PageTitle title="Vetify OTP" />
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-2/3 space-y-6"
@@ -74,7 +87,7 @@ export function VerifyOtpPage() {
                   </InputOTP>
                 </FormControl>
                 <FormDescription>
-                  Please enter the one-time password sent to your email.
+                  Please enter the one-time password sent to your phone.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -88,4 +101,4 @@ export function VerifyOtpPage() {
   );
 }
 
-export default VerifyOtpPage;
+export default VerifyOtp;

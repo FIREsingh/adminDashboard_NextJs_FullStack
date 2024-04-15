@@ -13,8 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -31,14 +31,10 @@ const formSchema = z
   });
 
 //=================== Register Handler =================
-const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  console.log(values);
-  await axios.post("api/register", values).then(() => {
-    console.log("check otp");
-  });
-};
 
 export default function RegisterForm() {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,6 +44,23 @@ export default function RegisterForm() {
       confirmPassword: "",
     },
   });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const res = await axios
+        .post("api/register", values)
+        .then((res) => {
+          console.log("===>", res.data?.message);
+          console.log("check otp");
+          router.push("/verifyOtp");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Form {...form}>

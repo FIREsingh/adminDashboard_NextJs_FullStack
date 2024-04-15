@@ -7,7 +7,8 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    const { username, code } = await request.json();
+    const { pin } = await request.json();
+    const username = "aaaaa";
     const decodedUsername = decodeURIComponent(username);
     const user = await UserModel.findOne({ username: decodedUsername });
 
@@ -19,13 +20,16 @@ export async function POST(request: Request) {
     }
 
     // if user exist then check if the otp is correct and not expired
-    const isCodeValid = user.verifyCode === code;
+    const isCodeValid = user.verifyCode === pin;
     const isCodeNotExpired = new Date(user.verifyCodeExpiry) > new Date();
-
     if (isCodeValid && isCodeNotExpired) {
       // if otp is valid and not expired then update the user's verification status
       user.isVerified = true;
-      await user.save();
+      // user.verifyCode = undefined;
+      // user.verifyCodeExpiry = undefined;
+      console.log("user backend ===>", user);
+      await user.save({ validateBeforeSave: false });
+      console.log(user);
 
       return Response.json(
         { success: true, message: "Account verified successfully" },

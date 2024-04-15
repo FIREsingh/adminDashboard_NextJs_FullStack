@@ -16,7 +16,6 @@ export async function POST(request: Request) {
 
   try {
     const { username, email, password } = await request.json();
-
     const existingVerifiedUserByUsername = await UserModel.findOne({
       username,
       isVerified: true,
@@ -68,11 +67,13 @@ export async function POST(request: Request) {
       await newUser.save();
     }
 
+    console.log("email : ", email, username, verifyCode);
     const emailResponse = await sendVerificationEmail(
       email,
       username,
       verifyCode
     );
+    console.log("emailResponse=====>", emailResponse);
     if (!emailResponse.success) {
       return json(
         {

@@ -26,15 +26,15 @@ const formSchema = z.object({
 });
 
 //=================== loginHandler ========================
-const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  console.log(values);
-  await axios.post("api/login", values).then(() => {
-    console.log("check otp");
-    router.push("/dashboard");
-  });
-};
 
 export default function LoginForm() {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    await axios.post("api/login", values).then(() => {
+      console.log("check otp");
+      router.push("/dashboard");
+    });
+  };
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
