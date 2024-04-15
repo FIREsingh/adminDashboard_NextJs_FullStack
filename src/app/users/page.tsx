@@ -63,7 +63,7 @@ const Users: React.FC<Props> = () => {
       <User users={users} />
 
       {isModalOpen && (
-        <div className="fixed -top-10 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed -top-10 inset-0 flex items-center justify-center bg-black  bg-opacity-60">
           <div className="bg-white p-6 rounded-lg">
             <h2 className="text-xl font-bold mb-4">Add New User</h2>
             <div className="mb-4">
@@ -94,7 +94,7 @@ const Users: React.FC<Props> = () => {
                 <option value="Moderator">Moderator</option>
               </select>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end space-x-2">
               <Button onClick={handleAddUser}>Add</Button>
               <Button onClick={closeModal} variant="secondary">
                 Cancel

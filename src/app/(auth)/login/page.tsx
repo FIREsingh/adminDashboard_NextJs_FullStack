@@ -6,7 +6,7 @@ type Props = {};
 
 export default function LoginPage({}: Props) {
   return (
-    <div className=" justify-center flex flex-col items-center">
+    <div className="  justify-center flex flex-col items-center">
       <PageTitle title="Login" />
       <LoginForm />
     </div>

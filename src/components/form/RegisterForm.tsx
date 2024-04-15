@@ -34,7 +34,7 @@ const formSchema = z
 const onSubmit = async (values: z.infer<typeof formSchema>) => {
   console.log(values);
   await axios.post("api/register", values).then(() => {
-    console.log("ok ok ok");
+    console.log("check otp");
   });
 };
 

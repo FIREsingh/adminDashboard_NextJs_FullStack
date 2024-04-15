@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -24,12 +26,17 @@ const formSchema = z.object({
 });
 
 //=================== loginHandler ========================
-const onSubmit = (values: z.infer<typeof formSchema>) => {
-  console.log("ok");
+const onSubmit = async (values: z.infer<typeof formSchema>) => {
   console.log(values);
+  await axios.post("api/login", values).then(() => {
+    console.log("check otp");
+    router.push("/dashboard");
+  });
 };
 
 export default function LoginForm() {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -37,7 +44,7 @@ export default function LoginForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className=" w-full">
-        <div className=" space-y-5">
+        <div className="space-y-5">
           <FormField
             control={form.control}
             name="username"

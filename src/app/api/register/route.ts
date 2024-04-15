@@ -1,9 +1,11 @@
+import { json } from "@sveltejs/kit";
 import dbConnect from "@/lib/dbConnect";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 import UserModel from "@/app/model/UserModel";
 
 export async function POST(request: Request) {
+  console.log("in");
   await dbConnect()
     .then(() => {
       console.log("db connected in controller");
@@ -21,11 +23,11 @@ export async function POST(request: Request) {
     });
 
     if (existingVerifiedUserByUsername) {
-      return new Response(
-        JSON.stringify({
+      return json(
+        {
           success: false,
           message: "Username is already taken",
-        }),
+        },
         { status: 400 }
       );
     }
@@ -35,11 +37,11 @@ export async function POST(request: Request) {
 
     if (existingUserByEmail) {
       if (existingUserByEmail.isVerified) {
-        return new Response(
-          JSON.stringify({
+        return json(
+          {
             success: false,
             message: "User already exists with this email",
-          }),
+          },
           { status: 400 }
         );
       } else {
@@ -72,29 +74,29 @@ export async function POST(request: Request) {
       verifyCode
     );
     if (!emailResponse.success) {
-      return new Response(
-        JSON.stringify({
+      return json(
+        {
           success: false,
           message: emailResponse.message,
-        }),
+        },
         { status: 500 }
       );
     }
 
-    return new Response(
-      JSON.stringify({
+    return json(
+      {
         success: true,
         message: "User registered successfully. Please verify your account.",
-      }),
+      },
       { status: 201 }
     );
   } catch (error) {
     console.error("Error registering user:", error);
-    return new Response(
-      JSON.stringify({
+    return json(
+      {
         success: false,
         message: "Error registering user",
-      }),
+      },
       { status: 500 }
     );
   }

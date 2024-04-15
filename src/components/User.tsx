@@ -62,6 +62,7 @@ const Users: React.FC<Props> = ({ users }) => {
               {editableIndex === index ? (
                 <input
                   type="text"
+                  className=" border-b-2 p-1"
                   value={editedUser?.name}
                   onChange={(e) => handleChange(e, "name")}
                 />
@@ -73,6 +74,7 @@ const Users: React.FC<Props> = ({ users }) => {
               {editableIndex === index ? (
                 <input
                   type="text"
+                  className=" border-b-2 p-1"
                   value={editedUser?.email}
                   onChange={(e) => handleChange(e, "email")}
                 />
