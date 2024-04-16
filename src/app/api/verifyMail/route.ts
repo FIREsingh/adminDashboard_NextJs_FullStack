@@ -25,8 +25,8 @@ export async function POST(request: Request) {
     if (isCodeValid && isCodeNotExpired) {
       // if otp is valid and not expired then update the user's verification status
       user.isVerified = true;
-      // user.verifyCode = undefined;
-      // user.verifyCodeExpiry = undefined;
+      user.verifyCode = undefined;
+      user.verifyCodeExpiry = undefined;
       console.log("user backend ===>", user);
       await user.save({ validateBeforeSave: false });
       console.log(user);
