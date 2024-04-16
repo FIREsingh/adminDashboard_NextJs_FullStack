@@ -48,7 +48,7 @@ export default function RegisterForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const res = await axios
-        .post("api/register", values)
+        .post("/api/register", values)
         .then((res) => {
           console.log("===>", res.data?.message);
           console.log("check otp");

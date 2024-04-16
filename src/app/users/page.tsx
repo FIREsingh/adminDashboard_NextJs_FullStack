@@ -4,28 +4,31 @@ import PageTitle from "@/components/PageTitle";
 import User from "@/components/User";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import axios from "axios";
 
 type User = {
-  name: string;
+  username: string;
   email: string;
   role: string;
+  password: string;
 };
 
 type Props = {};
 
 const dummyUsers = [
-  { name: "John Doe", email: "john@example.com", role: "Admin" },
-  { name: "Jane Smith", email: "jane@example.com", role: "User" },
-  { name: "Mike Johnson", email: "mike@example.com", role: "Moderator" },
+  { username: "John Doe", email: "john@example.com", role: "Admin" },
+  { username: "Jane Smith", email: "jane@example.com", role: "User" },
+  { username: "Mike Johnson", email: "mike@example.com", role: "Moderator" },
   // Add more dummy user data as needed
 ];
 
 const Users: React.FC<Props> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newUser, setNewUser] = useState<User>({
-    name: "",
+    username: "",
     email: "",
     role: "",
+    password: "",
   });
   const [users, setUsers] = useState<User[]>(dummyUsers);
 
@@ -42,9 +45,17 @@ const Users: React.FC<Props> = () => {
     setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
 
-  const handleAddUser = () => {
+  const handleAddUser = async () => {
     setUsers([...users, newUser]);
-    setNewUser({ name: "", email: "", role: "" });
+    await axios
+      .post("/api/adminRegister", newUser)
+      .then((res) => {
+        console.log("res is: ======>", res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setNewUser({ username: "", email: "", role: "", password: "" });
     closeModal();
   };
 
@@ -63,22 +74,30 @@ const Users: React.FC<Props> = () => {
       <User users={users} />
 
       {isModalOpen && (
-        <div className="fixed -top-10 inset-0 flex items-center justify-center bg-black  bg-opacity-60">
-          <div className="bg-white p-6 rounded-lg">
+        <div className=" fixed -top-10 inset-0 flex items-center justify-center bg-black  bg-opacity-60">
+          <div className="bg-white p-6 shadow-2xl min-w-72 rounded-lg">
             <h2 className="text-xl font-bold mb-4">Add New User</h2>
             <div className="mb-4">
               <Input
-                name="name"
-                placeholder="Name"
-                value={newUser.name}
+                name="username"
+                placeholder="User's name"
+                value={newUser.username}
                 onChange={handleInputChange}
               />
             </div>
             <div className="mb-4">
               <Input
                 name="email"
-                placeholder="Email"
+                placeholder="User's email"
                 value={newUser.email}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="mb-4">
+              <Input
+                name="password"
+                placeholder="User's password"
+                value={newUser.password}
                 onChange={handleInputChange}
               />
             </div>
@@ -90,8 +109,8 @@ const Users: React.FC<Props> = () => {
               >
                 <option value="">Select Role</option>
                 <option value="Admin">Admin</option>
-                <option value="User">User</option>
-                <option value="Moderator">Moderator</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Student">Student</option>
               </select>
             </div>
             <div className="flex justify-end space-x-2">

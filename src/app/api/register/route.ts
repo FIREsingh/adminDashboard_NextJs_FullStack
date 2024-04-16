@@ -5,7 +5,6 @@ import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 import UserModel from "@/app/model/UserModel";
 
 export async function POST(request: Request) {
-  console.log("in");
   await dbConnect()
     .then(() => {
       console.log("db connected in controller");

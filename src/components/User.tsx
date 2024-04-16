@@ -4,9 +4,10 @@ import { Trash2, Pencil, Eye } from "lucide-react";
 import { Button } from "./ui/button";
 
 type User = {
-  name: string;
+  username: string;
   email: string;
   role: string;
+  password: string;
 };
 
 type Props = {
@@ -63,11 +64,11 @@ const Users: React.FC<Props> = ({ users }) => {
                 <input
                   type="text"
                   className=" border-b-2 p-1"
-                  value={editedUser?.name}
+                  value={editedUser?.username}
                   onChange={(e) => handleChange(e, "name")}
                 />
               ) : (
-                user.name
+                user.username
               )}
             </td>
             <td className="border p-2">
