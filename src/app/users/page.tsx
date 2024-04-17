@@ -51,12 +51,15 @@ const Users: React.FC<Props> = () => {
 
   //add new-user handler
   const handleAddUser = async () => {
+    console.log(newUser);
     setUsers([...users, newUser]);
+
     //==-================================================
     console.log("user:::====>>>", users);
     await axios
       .post("/api/adminRegister", newUser)
       .then((res) => {
+        console.log(users);
         console.log("res is: ======>", res);
       })
       .catch((err) => {
@@ -115,9 +118,9 @@ const Users: React.FC<Props> = () => {
                 onChange={handleInputChange}
               >
                 <option value="">Select Role</option>
-                <option value="Admin">Admin</option>
-                <option value="Teacher">Teacher</option>
-                <option value="Student">Student</option>
+                <option value="admin">Admin</option>
+                <option value="aeacher">Teacher</option>
+                <option value="student">Student</option>
               </select>
             </div>
             <div className="flex justify-end space-x-2">
