@@ -13,12 +13,13 @@ const MessageSchema: Schema<Message> = new Schema({
 enum Role {
   admin = "admin",
   student = "student",
+  teacher = "teacher",
 }
 export interface User extends Document {
   username: string;
   email: string;
   password: string;
-  role: "admin" | "student";
+  role: Role;
   verifyCode: string;
   verifyCodeExpiry: Date;
   isVerified: boolean;

@@ -41,29 +41,19 @@ export function VerifyOtp() {
       username: "",
     },
   });
-
+  //submit button handler
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(params.username);
-    data.username = params.username;
-    console.log(data);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-    await axios
-      .post("api/verifyMail", data)
-      .then((res) => {
+    try {
+      data.username = params.username;
+      console.log("data from front end of verify otp", data);
+      await axios.post("/api/verifyMail", data).then((res) => {
         console.log(res);
         console.log("Success");
         router.push("/login");
-      })
-      .catch((err) => {
-        console.log("error is inside VerifyOtp: ==>", err);
       });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

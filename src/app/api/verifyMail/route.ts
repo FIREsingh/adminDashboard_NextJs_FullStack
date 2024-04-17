@@ -8,7 +8,7 @@ export async function POST(request: Request) {
 
   try {
     const { pin, username } = await request.json();
-    console.log("data is ::====>", pin, username);
+    console.log(pin, username);
     const decodedUsername = decodeURIComponent(username);
     const user = await UserModel.findOne({ username: decodedUsername });
 
