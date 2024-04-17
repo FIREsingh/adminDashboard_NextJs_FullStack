@@ -13,21 +13,20 @@ type User = {
 
 type Props = {
   users: User[];
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
 };
 
 const roleOptions = ["student", "teacher", "admin"];
 
 //================ user controller ====================
-const Users: React.FC<Props> = ({ users }) => {
+const Users: React.FC<Props> = ({ users, setUsers }) => {
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<User | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   const router = useRouter();
-
-  const handleDelete = (index: number) => {
-    // Implement delete functionality here
-    console.log(`Deleting user at index ${index}`);
-  };
 
   //edit button handler
   const handleEdit = (index: number) => {
@@ -55,72 +54,52 @@ const Users: React.FC<Props> = ({ users }) => {
   //view button handler
   const viewHandler = async (email: string) => {
     try {
-      console.log("ok");
-      console.log("email is ==>", email);
       router.push(`/users/${email}`);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
 
+  //delete button handler
+  const handleDelete = (user: User) => {
+    console.log(user);
+    setUserToDelete(user);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    if (userToDelete) {
+      console.log("Deleting user:", userToDelete.email);
+      await axios.get(`/api/deleteUser/${userToDelete.email}`);
+      console.log("deleted");
+      setUsers(users.filter((user) => user.email !== userToDelete.email));
+      setShowDeleteModal(false);
+    }
+  };
+
+  const handleAddUser = () => {
+    setShowAddModal(true);
+  };
+
   return (
-    <table className="border-collapse border rounded w-full">
-      <thead className="bg-gray-200">
-        <tr>
-          <th className="border p-2">Name</th>
-          <th className="border p-2">Email</th>
-          <th className="border p-2">Role</th>
-          <th className="border p-2">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.map((user, index) => (
-          <tr key={index}>
-            <td className="border p-2">
-              {editableIndex === index ? (
-                <input
-                  type="text"
-                  className=" border-b-2 p-1"
-                  value={editedUser?.username}
-                  onChange={(e) => handleChange(e, "username")}
-                />
-              ) : (
-                user.username
-              )}
-            </td>
-            <td className="border p-2">
-              {editableIndex === index ? (
-                <input
-                  type="text"
-                  className=" border-b-2 p-1"
-                  value={editedUser?.email}
-                  onChange={(e) => handleChange(e, "email")}
-                />
-              ) : (
-                user.email
-              )}
-            </td>
-            <td className="border p-2">
-              {editableIndex === index ? (
-                <select
-                  value={editedUser?.role}
-                  onChange={(e) => handleChange(e, "role")}
-                  className="px-2 py-1 border rounded"
-                >
-                  {roleOptions.map((role, index) => (
-                    <option key={index} value={role}>
-                      {role}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                user.role
-              )}
-            </td>
-            <td className="border p-2 flex space-x-2">
-              {editableIndex === index ? (
-                <Button onClick={handleSave}> Save </Button>
-              ) : (
+    <div>
+      <table className="border-collapse border rounded w-full">
+        {/* Table Header */}
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="border p-2">Name</th>
+            <th className="border p-2">Email</th>
+            <th className="border p-2">Role</th>
+            <th className="border p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user, index) => (
+            <tr key={index}>
+              <td className="border p-2">{user.username}</td>
+              <td className="border p-2">{user.email}</td>
+              <td className="border p-2">{user.role}</td>
+              <td className="border p-2 flex space-x-2">
                 <div className=" flex space-x-4">
                   <Pencil
                     className="hover:scale-90  hover:transition-all"
@@ -132,15 +111,54 @@ const Users: React.FC<Props> = ({ users }) => {
                   />
                   <Trash2
                     className="hover:scale-90  hover:transition-all  text-red-400"
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(user)}
                   />
                 </div>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <Modal
+          message={`Do you want to delete ${userToDelete?.username}?`}
+          onYes={handleDeleteConfirmed}
+          onNo={() => setShowDeleteModal(false)}
+        />
+      )}
+
+      {/* Add User Modal */}
+      {showAddModal && (
+        <Modal
+          message="Add user functionality goes here"
+          onYes={() => {
+            setShowAddModal(false);
+          }}
+          onNo={() => setShowAddModal(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+// Modal Component
+const Modal: React.FC<{
+  message: string;
+  onYes: () => void;
+  onNo: () => void;
+}> = ({ message, onYes, onNo }) => {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-md shadow-xl">
+        <p>{message}</p>
+        <div className="flex justify-end mt-4 space-x-1">
+          <Button onClick={onYes}>Yes</Button>
+          <Button onClick={onNo}>No</Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

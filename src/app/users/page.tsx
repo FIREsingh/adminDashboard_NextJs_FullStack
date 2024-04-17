@@ -18,7 +18,7 @@ type Props = {};
 const Users: React.FC<Props> = () => {
   const [users, setUsers] = useState<User[]>([]);
 
-  //data fetching
+  //fetch all users
   useEffect(() => {
     fetchedData();
   }, []);
@@ -81,7 +81,7 @@ const Users: React.FC<Props> = () => {
         <Button onClick={openModal}>+Add User</Button>
       </div>
 
-      <User users={users} />
+      <User users={users} setUsers={setUsers} />
 
       {isModalOpen && (
         <div className=" fixed -top-10 inset-0 flex items-center justify-center bg-black  bg-opacity-60">
@@ -119,7 +119,7 @@ const Users: React.FC<Props> = () => {
               >
                 <option value="">Select Role</option>
                 <option value="admin">Admin</option>
-                <option value="aeacher">Teacher</option>
+                <option value="teacher">Teacher</option>
                 <option value="student">Student</option>
               </select>
             </div>
