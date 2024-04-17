@@ -7,13 +7,13 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    const { pin } = await request.json();
-    const username = "aaaaa";
+    const { pin, username } = await request.json();
+    console.log("data is ::====>", pin, username);
     const decodedUsername = decodeURIComponent(username);
     const user = await UserModel.findOne({ username: decodedUsername });
 
     if (!user) {
-      return Response.json(
+      return json(
         { success: false, message: "User not found" },
         { status: 404 }
       );
@@ -31,13 +31,13 @@ export async function POST(request: Request) {
       await user.save({ validateBeforeSave: false });
       console.log(user);
 
-      return Response.json(
+      return json(
         { success: true, message: "Account verified successfully" },
         { status: 200 }
       );
       // If code has expired
     } else if (!isCodeNotExpired) {
-      return Response.json(
+      return json(
         {
           success: false,
           message:
@@ -47,14 +47,14 @@ export async function POST(request: Request) {
       );
       // if code is incorrect
     } else {
-      return Response.json(
+      return json(
         { success: false, message: "Incorrect verification code" },
         { status: 400 }
       );
     }
   } catch (error) {
     console.error("Error verifying user:", error);
-    return Response.json(
+    return json(
       { success: false, message: "Error verifying user" },
       { status: 500 }
     );

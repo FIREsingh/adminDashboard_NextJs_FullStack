@@ -18,7 +18,7 @@ export interface User extends Document {
   username: string;
   email: string;
   password: string;
-  role: Role;
+  role: "admin" | "student";
   verifyCode: string;
   verifyCodeExpiry: Date;
   isVerified: boolean;

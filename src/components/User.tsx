@@ -1,7 +1,8 @@
-// Users.tsx
 import React, { useState } from "react";
 import { Trash2, Pencil, Eye } from "lucide-react";
 import { Button } from "./ui/button";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type User = {
   username: string;
@@ -16,20 +17,25 @@ type Props = {
 
 const roleOptions = ["student", "teacher", "admin"];
 
+//================ user controller ====================
 const Users: React.FC<Props> = ({ users }) => {
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<User | null>(null);
+
+  const router = useRouter();
 
   const handleDelete = (index: number) => {
     // Implement delete functionality here
     console.log(`Deleting user at index ${index}`);
   };
 
+  //edit button handler
   const handleEdit = (index: number) => {
     setEditableIndex(index);
     setEditedUser(users[index]);
   };
 
+  //onChange handler
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     key: keyof User
@@ -39,11 +45,22 @@ const Users: React.FC<Props> = ({ users }) => {
     }
   };
 
+  // save button handler
   const handleSave = () => {
-    // Implement save functionality here
     console.log("Saving changes:", editedUser);
     setEditableIndex(null);
     setEditedUser(null);
+  };
+
+  //view button handler
+  const viewHandler = async (email: string) => {
+    try {
+      console.log("ok");
+      console.log("email is ==>", email);
+      router.push(`/users/${email}`);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   };
 
   return (
@@ -65,7 +82,7 @@ const Users: React.FC<Props> = ({ users }) => {
                   type="text"
                   className=" border-b-2 p-1"
                   value={editedUser?.username}
-                  onChange={(e) => handleChange(e, "name")}
+                  onChange={(e) => handleChange(e, "username")}
                 />
               ) : (
                 user.username
@@ -102,18 +119,23 @@ const Users: React.FC<Props> = ({ users }) => {
             </td>
             <td className="border p-2 flex space-x-2">
               {editableIndex === index ? (
-                // <button className="btn btn-xs btn-success" onClick={handleSave}>
-                //   Save
-                // </button>
                 <Button onClick={handleSave}> Save </Button>
               ) : (
-                <Pencil onClick={() => handleEdit(index)} />
+                <div className=" flex space-x-4">
+                  <Pencil
+                    className="hover:scale-90  hover:transition-all"
+                    onClick={() => handleEdit(index)}
+                  />
+                  <Eye
+                    onClick={() => viewHandler(user.email)}
+                    className=" hover:scale-90 text-blue-600 hover:transition-all  "
+                  />
+                  <Trash2
+                    className="hover:scale-90  hover:transition-all  text-red-400"
+                    onClick={() => handleDelete(index)}
+                  />
+                </div>
               )}
-              <Eye className=" text-blue-600" />
-              <Trash2
-                className=" text-red-400"
-                onClick={() => handleDelete(index)}
-              />
             </td>
           </tr>
         ))}

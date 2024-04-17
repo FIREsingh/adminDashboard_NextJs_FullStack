@@ -5,6 +5,15 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Form,
   FormControl,
   FormField,
@@ -15,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const formSchema = z
   .object({
@@ -24,6 +34,7 @@ const formSchema = z
     email: z.string().email(),
     password: z.string().min(4, "Password must be at least 4 characters"),
     confirmPassword: z.string(),
+    role: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
@@ -33,6 +44,8 @@ const formSchema = z
 //=================== Register Handler =================
 
 export default function RegisterForm() {
+  const [selectedRole, setSelectedRole] = useState("");
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,6 +55,7 @@ export default function RegisterForm() {
       email: "",
       password: "",
       confirmPassword: "",
+      role: "",
     },
   });
 
@@ -50,9 +64,8 @@ export default function RegisterForm() {
       const res = await axios
         .post("/api/register", values)
         .then((res) => {
-          console.log("===>", res.data?.message);
           console.log("check otp");
-          router.push("/verifyOtp");
+          router.push(`/verifyOtp/${values.username}`);
         })
         .catch((err) => {
           console.log(err);
@@ -89,7 +102,6 @@ export default function RegisterForm() {
                 <FormControl>
                   <Input type="email" placeholder="abc@gmail.com" {...field} />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -130,6 +142,27 @@ export default function RegisterForm() {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <Select onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a Role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">admin</SelectItem>
+                    <SelectItem value="teacher">teacher</SelectItem>
+                    <SelectItem value="student">student</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button className=" w-full" type="submit">
             Register
           </Button>

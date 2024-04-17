@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageTitle from "@/components/PageTitle";
 import User from "@/components/User";
 import { Button } from "@/components/ui/button";
@@ -15,14 +15,18 @@ type User = {
 
 type Props = {};
 
-const dummyUsers = [
-  { username: "John Doe", email: "john@example.com", role: "Admin" },
-  { username: "Jane Smith", email: "jane@example.com", role: "User" },
-  { username: "Mike Johnson", email: "mike@example.com", role: "Moderator" },
-  // Add more dummy user data as needed
-];
-
 const Users: React.FC<Props> = () => {
+  const [users, setUsers] = useState<User[]>([]);
+
+  //data fetching
+  useEffect(() => {
+    fetchedData();
+  }, []);
+  const fetchedData = async () => {
+    const res = await axios.get("/api/allUserData");
+    setUsers(res.data?.data);
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newUser, setNewUser] = useState<User>({
     username: "",
@@ -30,7 +34,6 @@ const Users: React.FC<Props> = () => {
     role: "",
     password: "",
   });
-  const [users, setUsers] = useState<User[]>(dummyUsers);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -40,13 +43,17 @@ const Users: React.FC<Props> = () => {
     setIsModalOpen(false);
   };
 
+  //change handler
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
 
+  //add new-user handler
   const handleAddUser = async () => {
     setUsers([...users, newUser]);
+    //==-================================================
+    console.log("user:::====>>>", users);
     await axios
       .post("/api/adminRegister", newUser)
       .then((res) => {

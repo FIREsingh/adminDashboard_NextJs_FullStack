@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     });
 
   try {
-    const { username, email, password } = await request.json();
+    const { username, email, password, role } = await request.json();
     const existingVerifiedUserByUsername = await UserModel.findOne({
       username,
       isVerified: true,
@@ -45,6 +45,7 @@ export async function POST(request: Request) {
       } else {
         const hashedPassword = await bcrypt.hash(password, 10);
         existingUserByEmail.password = hashedPassword;
+        existingUserByEmail.role = role;
         existingUserByEmail.verifyCode = verifyCode;
         existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
         await existingUserByEmail.save();
@@ -58,6 +59,7 @@ export async function POST(request: Request) {
         username,
         email,
         password: hashedPassword,
+        role,
         verifyCode,
         verifyCodeExpiry: expiryDate,
         isVerified: false,
@@ -65,8 +67,6 @@ export async function POST(request: Request) {
 
       await newUser.save();
     }
-
-    console.log("email : ", email, username, verifyCode);
     const emailResponse = await sendVerificationEmail(
       email,
       username,

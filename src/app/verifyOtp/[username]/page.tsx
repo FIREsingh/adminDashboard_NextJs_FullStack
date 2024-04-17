@@ -22,24 +22,30 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import PageTitle from "@/components/PageTitle";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
     message: "Your one-time password must be 6 characters.",
   }),
+  username: z.string(),
 });
 
 export function VerifyOtp() {
+  const params = useParams<{ username: string }>();
   const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       pin: "",
+      username: "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log(params.username);
+    data.username = params.username;
+    console.log(data);
     toast({
       title: "You submitted the following values:",
       description: (
@@ -56,7 +62,7 @@ export function VerifyOtp() {
         router.push("/login");
       })
       .catch((err) => {
-        console.log(err);
+        console.log("error is inside VerifyOtp: ==>", err);
       });
   }
 
