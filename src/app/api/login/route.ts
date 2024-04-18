@@ -1,7 +1,7 @@
-import { json } from "@sveltejs/kit";
-
 export async function POST(request: Request) {
-  return json(
+  const { email, password } = await request.json();
+  console.log(email, password);
+  return Response.json(
     {
       success: true,
       message: "Entered.",

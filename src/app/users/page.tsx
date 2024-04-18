@@ -24,7 +24,13 @@ const Users: React.FC<Props> = () => {
   }, []);
   const fetchedData = async () => {
     const res = await axios.get("/api/allUserData");
-    setUsers(res.data?.data);
+    setUsers(
+      res.data?.data.sort((a, b) => {
+        const dateA = new Date(a.updatedAt);
+        const dateB = new Date(b.updatedAt);
+        return dateB - dateA;
+      })
+    );
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,7 +55,7 @@ const Users: React.FC<Props> = () => {
     setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
 
-  //add new-user handler
+  //add button to add new-user handler
   const handleAddUser = async () => {
     console.log(newUser);
     setUsers([...users, newUser]);
@@ -72,7 +78,7 @@ const Users: React.FC<Props> = () => {
   return (
     <div className="w-auto space-y-10">
       <div>
-        <PageTitle title="Users" />
+        <PageTitle title="All Users" />
       </div>
       <div className="flex justify-between">
         <div className="w-2/12">

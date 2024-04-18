@@ -46,7 +46,7 @@ export default function Home() {
         <Card
           icon={UsersRound}
           count={<CountUp start={0} end={getCountByRole("student")}></CountUp>}
-          title="Student"
+          title="Students"
         />
       </div>
     </div>

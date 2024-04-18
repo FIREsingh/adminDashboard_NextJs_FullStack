@@ -29,9 +29,13 @@ const Users: React.FC<Props> = ({ users, setUsers }) => {
   const router = useRouter();
 
   //edit button handler
-  const handleEdit = (index: number) => {
-    setEditableIndex(index);
-    setEditedUser(users[index]);
+  const handleEdit = (email: string) => {
+    try {
+      console.log("email send to editByEmail", email);
+      router.push(`/editByEmail/${email}`);
+    } catch (error) {
+      console.error("Error while editing user data:", error);
+    }
   };
 
   //onChange handler
@@ -103,7 +107,7 @@ const Users: React.FC<Props> = ({ users, setUsers }) => {
                 <div className=" flex space-x-4">
                   <Pencil
                     className="hover:scale-90  hover:transition-all"
-                    onClick={() => handleEdit(index)}
+                    onClick={() => handleEdit(user.email)}
                   />
                   <Eye
                     onClick={() => viewHandler(user.email)}

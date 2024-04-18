@@ -9,6 +9,8 @@ type User = {
   email: string;
   _id: string;
   role: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type Props = {
@@ -37,7 +39,7 @@ const UserDetailPage = ({ params }: Props) => {
 
   return (
     <>
-      <PageTitle title="User Details" />
+      <PageTitle title="User's Detail" />
       <div className="flex h-full justify-center items-center m-auto">
         {user ? (
           <div className="p-10 rounded-2xl text-lg bg-slate-50 hover:scale-125 transition-all ease-out delay-100 shadow-md">
@@ -53,6 +55,12 @@ const UserDetailPage = ({ params }: Props) => {
               </p>
               <p>
                 <strong>Role:</strong> {user.role}
+              </p>
+              <p>
+                <strong>CreatedAt:</strong> {user.createdAt}
+              </p>
+              <p>
+                <strong>UpdatedAt:</strong> {user.updatedAt}
               </p>
             </div>
           </div>
