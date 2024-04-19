@@ -5,6 +5,15 @@ import User from "@/components/User";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type User = {
   username: string;
@@ -16,14 +25,20 @@ type User = {
 type Props = {};
 
 const Users: React.FC<Props> = () => {
+  const limit = 3;
   const [users, setUsers] = useState<User[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [count, setCount] = useState(0);
 
-  //fetch all users
   useEffect(() => {
-    fetchedData();
-  }, []);
-  const fetchedData = async () => {
-    const res = await axios.get("/api/allUserData");
+    fetchData();
+  }, [currentPage, count]);
+
+  const fetchData = async () => {
+    const res = await axios.get(
+      `/api/allUserData?page=${currentPage}&limit=${limit}`
+    );
+    setCount(res.data?.count);
     setUsers(
       res.data?.data.sort((a, b) => {
         const dateA = new Date(a.updatedAt);
@@ -31,6 +46,15 @@ const Users: React.FC<Props> = () => {
         return dateB - dateA;
       })
     );
+  };
+
+  // Add pagination controls
+  const nextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const prevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,19 +73,16 @@ const Users: React.FC<Props> = () => {
     setIsModalOpen(false);
   };
 
-  //change handler
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
-
-  //add button to add new-user handler
+  //add button handler inside modal
   const handleAddUser = async () => {
     console.log(newUser);
+    setCount(count + 1);
     setUsers([...users, newUser]);
 
-    //==-================================================
-    console.log("user:::====>>>", users);
     await axios
       .post("/api/adminRegister", newUser)
       .then((res) => {
@@ -75,6 +96,27 @@ const Users: React.FC<Props> = () => {
     closeModal();
   };
 
+  // Calculate pageCount
+  const pageCount = Math.ceil(count / limit);
+
+  // Generate pagination links
+  const paginationLinks = [];
+  for (let i = 1; i <= pageCount; i++) {
+    paginationLinks.push(
+      <PaginationItem key={i}>
+        <PaginationLink
+          href="#"
+          onClick={() => setCurrentPage(i)}
+          className={
+            currentPage === i ? "text-blue-500 border bg-slate-50 " : ""
+          }
+        >
+          {i}
+        </PaginationLink>
+      </PaginationItem>
+    );
+  }
+
   return (
     <div className="w-auto space-y-10">
       <div>
@@ -87,7 +129,32 @@ const Users: React.FC<Props> = () => {
         <Button onClick={openModal}>+Add User</Button>
       </div>
 
-      <User users={users} setUsers={setUsers} />
+      <User
+        users={users}
+        setUsers={setUsers}
+        count={count}
+        setCount={setCount}
+      />
+
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={prevPage}
+              disabled={currentPage === 1}
+            />
+          </PaginationItem>
+          {paginationLinks}
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={nextPage}
+              disabled={currentPage == pageCount - 1}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
 
       {isModalOpen && (
         <div className=" fixed -top-10 inset-0 flex items-center justify-center bg-black  bg-opacity-60">
