@@ -14,12 +14,14 @@ type User = {
 type Props = {
   users: User[];
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  count: number;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const roleOptions = ["student", "teacher", "admin"];
 
 //================ user controller ====================
-const Users: React.FC<Props> = ({ users, setUsers }) => {
+const Users: React.FC<Props> = ({ users, setUsers, count, setCount }) => {
   const [editableIndex, setEditableIndex] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<User | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
@@ -78,6 +80,7 @@ const Users: React.FC<Props> = ({ users, setUsers }) => {
       console.log("deleted");
       setUsers(users.filter((user) => user.email !== userToDelete.email));
       setShowDeleteModal(false);
+      setCount(count - 1);
     }
   };
 

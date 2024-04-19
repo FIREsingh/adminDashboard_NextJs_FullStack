@@ -52,7 +52,6 @@ const Users: React.FC<Props> = () => {
   const nextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
-
   const prevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
@@ -77,11 +76,10 @@ const Users: React.FC<Props> = () => {
     const { name, value } = e.target;
     setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
-  //add button handler inside modal
+  //add button-handler inside modal
   const handleAddUser = async () => {
     console.log(newUser);
     setCount(count + 1);
-    setUsers([...users, newUser]);
 
     await axios
       .post("/api/adminRegister", newUser)
@@ -139,18 +137,14 @@ const Users: React.FC<Props> = () => {
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={prevPage}
-              disabled={currentPage === 1}
-            />
+            <PaginationPrevious href="#" onClick={prevPage} />
           </PaginationItem>
           {paginationLinks}
           <PaginationItem>
             <PaginationNext
               href="#"
               onClick={nextPage}
-              disabled={currentPage == pageCount - 1}
+              disabled={currentPage >= pageCount}
             />
           </PaginationItem>
         </PaginationContent>
