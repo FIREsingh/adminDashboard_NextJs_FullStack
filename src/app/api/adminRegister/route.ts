@@ -1,7 +1,6 @@
 import { json } from "@sveltejs/kit";
 import dbConnect from "@/lib/dbConnect";
 import bcrypt from "bcryptjs";
-import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 import UserModel from "@/app/model/UserModel";
 
 export async function POST(request: Request) {
@@ -15,7 +14,7 @@ export async function POST(request: Request) {
 
   try {
     //fetch data from request
-    const { username, email, password } = await request.json();
+    const { username, email, password, role } = await request.json();
 
     if (!username || !email || !password) {
       return json(
@@ -44,6 +43,7 @@ export async function POST(request: Request) {
       const newUser = new UserModel({
         username,
         email,
+        role,
         password: hashedPassword,
         isVerified: true,
       });

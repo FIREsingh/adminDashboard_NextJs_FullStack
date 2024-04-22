@@ -50,7 +50,11 @@ const Users: React.FC<Props> = () => {
 
   // Add pagination controls
   const nextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+    if (currentPage != pageCount) {
+      setCurrentPage((prevPage) => prevPage + 1);
+      console.log("current Page is ", currentPage);
+      console.log(" Page  count is ", pageCount);
+    }
   };
   const prevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
@@ -76,15 +80,15 @@ const Users: React.FC<Props> = () => {
     const { name, value } = e.target;
     setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
+
   //add button-handler inside modal
   const handleAddUser = async () => {
     console.log(newUser);
     setCount(count + 1);
-
+    console.log(newUser);
     await axios
       .post("/api/adminRegister", newUser)
       .then((res) => {
-        console.log(users);
         console.log("res is: ======>", res);
       })
       .catch((err) => {
@@ -106,7 +110,7 @@ const Users: React.FC<Props> = () => {
           href="#"
           onClick={() => setCurrentPage(i)}
           className={
-            currentPage === i ? "text-blue-500 border bg-slate-50 " : ""
+            currentPage === i ? "text-blue-500 border bg-slate-50 text-lg " : ""
           }
         >
           {i}
@@ -137,14 +141,16 @@ const Users: React.FC<Props> = () => {
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious href="#" onClick={prevPage} />
+            <PaginationPrevious
+              className=" hover:cursor-pointer"
+              onClick={prevPage}
+            />
           </PaginationItem>
           {paginationLinks}
           <PaginationItem>
             <PaginationNext
-              href="#"
+              className=" hover:cursor-pointer"
               onClick={nextPage}
-              disabled={currentPage >= pageCount}
             />
           </PaginationItem>
         </PaginationContent>

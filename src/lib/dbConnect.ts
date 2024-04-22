@@ -15,11 +15,7 @@ async function dbConnect(): Promise<void> {
 
   try {
     // Attempt to connect to the database
-    const db = await mongoose.connect(
-      "mongodb+srv://manish:manish123@cluster0.8mctjgv.mongodb.net/adminDashboard" ||
-        "",
-      {}
-    );
+    const db = await mongoose.connect(process.env.MONGODB_URI!);
 
     connection.isConnected = db.connections[0].readyState;
 

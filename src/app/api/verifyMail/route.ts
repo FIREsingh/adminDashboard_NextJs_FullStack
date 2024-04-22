@@ -1,8 +1,9 @@
 import { json } from "@sveltejs/kit";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/app/model/UserModel";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   // Connect to the database
   await dbConnect();
 
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
     const user = await UserModel.findOne({ username: decodedUsername });
 
     if (!user) {
-      return json(
+      return NextResponse.json(
         { success: false, message: "User not found" },
         { status: 404 }
       );
@@ -31,13 +32,13 @@ export async function POST(request: Request) {
       await user.save({ validateBeforeSave: false });
       console.log(user);
 
-      return json(
+      return NextResponse.json(
         { success: true, message: "Account verified successfully" },
         { status: 200 }
       );
       // If code has expired
     } else if (!isCodeNotExpired) {
-      return json(
+      return NextResponse.json(
         {
           success: false,
           message:
@@ -47,14 +48,14 @@ export async function POST(request: Request) {
       );
       // if code is incorrect
     } else {
-      return json(
+      return NextResponse.json(
         { success: false, message: "Incorrect verification code" },
         { status: 400 }
       );
     }
   } catch (error) {
     console.error("Error verifying user:", error);
-    return json(
+    return NextResponse.json(
       { success: false, message: "Error verifying user" },
       { status: 500 }
     );

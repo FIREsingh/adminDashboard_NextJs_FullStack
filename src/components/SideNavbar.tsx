@@ -37,14 +37,14 @@ export default function SideNavbar({}: Props) {
             variant: "default",
           },
           {
-            title: "Users",
+            title: "Admin Page",
             href: "/users",
             icon: UsersRound,
             variant: "ghost",
           },
           {
-            title: "Setting",
-            href: "/setting",
+            title: "User Page",
+            href: "/home",
             icon: Inbox,
             variant: "ghost",
           },

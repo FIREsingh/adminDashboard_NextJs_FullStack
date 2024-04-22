@@ -16,7 +16,7 @@ type User = {
 type Props = {
   params: { email: string };
 };
-
+//==================== controller ==========================
 const EditByEmail = ({ params }: Props) => {
   const router = useRouter();
   const { email } = params;
@@ -81,9 +81,9 @@ const EditByEmail = ({ params }: Props) => {
   return (
     <>
       <PageTitle title="Edit User's Detail" />
-      <div className="flex h-full justify-center items-center m-auto">
+      <div className=" flex h-full justify-center items-center m-auto">
         {user ? (
-          <div className="p-10 rounded-2xl text-lg">
+          <div className="p-10  border shadow-md rounded-2xl text-lg">
             {isEditing ? (
               <div className="space-y-3 text-2xl">
                 <div>

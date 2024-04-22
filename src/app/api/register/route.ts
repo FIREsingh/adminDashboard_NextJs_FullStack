@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
 import dbConnect from "@/lib/dbConnect";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 import UserModel from "@/app/model/UserModel";
 
