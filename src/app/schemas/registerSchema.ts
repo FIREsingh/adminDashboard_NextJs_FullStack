@@ -13,6 +13,7 @@ export const registerSchema = z
       .string()
       .min(4, { message: "password must be atleast 4 characters." }),
     confirmPassword: z.string(),
+    role: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],

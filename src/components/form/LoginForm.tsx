@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,29 +16,34 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  email: z.string().email(),
-  password: z.string().min(4, "password must be at least 4 characters"),
-});
+import { useToast } from "@/components/ui/use-toast";
+import { loginSchema } from "@/app/schemas/loginSchema";
 
 //=================== loginHandler ========================
 
 export default function LoginForm() {
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const { toast } = useToast();
+
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     console.log(values);
     await axios.post("api/login", values).then(() => {
       console.log("check otp");
       router.push("/dashboard");
+      toast({
+        title: "Logged in Successfully",
+        description: "okkkkkkk",
+      });
     });
   };
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
   });
 
   return (
