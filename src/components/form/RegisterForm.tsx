@@ -24,11 +24,13 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { registerSchema } from "@/app/schemas/registerSchema";
+import { Loader2 } from "lucide-react";
 
 //=================== Register Handler =================
 
 export default function RegisterForm() {
   const [selectedRole, setSelectedRole] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const router = useRouter();
 
@@ -44,18 +46,22 @@ export default function RegisterForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
+    setSubmitting(true);
     try {
       const res = await axios
         .post("/api/register", values)
         .then((res) => {
           console.log("check otp");
           router.push(`/verifyOtp/${values.username}`);
+          setSubmitting(false);
         })
         .catch((err) => {
           console.log(err);
+          setSubmitting(false);
         });
     } catch (error) {
       console.log(error);
+      setSubmitting(false);
     }
   };
 
@@ -148,7 +154,14 @@ export default function RegisterForm() {
           />
 
           <Button className=" w-full" type="submit">
-            Register
+            {submitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              "Register"
+            )}
           </Button>
         </div>
       </form>
