@@ -18,13 +18,18 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { loginSchema } from "@/app/schemas/loginSchema";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 //=================== loginHandler ========================
 
 export default function LoginForm() {
+  const [submitting, setSubmitting] = useState(false);
+
   const { toast } = useToast();
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    setSubmitting(true);
     console.log(values);
     await axios.post("api/login", values).then(() => {
       console.log("check otp");
@@ -33,10 +38,11 @@ export default function LoginForm() {
         title: "Logged in Successfully",
         description: "okkkkkkk",
       });
+      setSubmitting(false);
     });
   };
-  const router = useRouter();
 
+  const router = useRouter();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -97,7 +103,14 @@ export default function LoginForm() {
           />
 
           <Button className=" w-full" type="submit">
-            Login
+            {submitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              "Login"
+            )}
           </Button>
         </div>
       </form>
